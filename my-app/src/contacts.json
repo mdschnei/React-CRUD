@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "firstName": "Alison",
+        "lastName": "McKenzie",
+        "phone": "9287289187",
+        "email": "amckenzie73@gmail.com",
+        "address": "127 Firestone Court, Mississauga ON"
+    },
+    {   
+        "id": 2,
+        "firstName": "Tommy",
+        "lastName": "Baker",
+        "phone": "2739280192",
+        "email": "tommybaker12@gmail.com",
+        "address": "82 Almet Avenue, Oakville ON"
+    }
+]
