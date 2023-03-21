@@ -17,16 +17,25 @@ const existingContacts = [
       "phone": "2739280192",
       "email": "tommybaker12@gmail.com",
       "address": "82 Almet Avenue, Oakville ON"
+  },
+  {
+    "id": 3,
+      "firstName": "Jeanette",
+      "lastName": "Aprile",
+      "phone": "8270207712",
+      "email": "jeanette.aprile@gmail.com",
+      "address": "927 Sonwa Drive, Kelowna BC"
   }
 ]
 
 
-function Contact({firstName = 'First Name', lastName = 'Last Name', phone = 'Phone Number', email = 'Email', address = 'Address'}) {
+function Contact({id, firstName = 'First Name', lastName = 'Last Name', phone = 'Phone Number', email = 'Email', address = 'Address', handleDeleteContact}) {
 
   
   function handleEditContact() {
     
   }
+
   
   return (
     <>
@@ -38,7 +47,8 @@ function Contact({firstName = 'First Name', lastName = 'Last Name', phone = 'Pho
         <p>Address: {address}</p>
       </div>
 
-      <button className="edit-contact-button" onClick={() => handleEditContact()}>Edit Contact</button>
+      <button className="edit-contact-button" onClick={() => handleEditContact(firstName, lastName, phone, email, address)}>Edit Contact</button>
+      <button className="delete-contact-button" onClick={() => handleDeleteContact(id)} >Delete Contact</button>
     </>
   )
 }
@@ -50,13 +60,23 @@ function AddContact(props) {
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [address, setAddress] = useState('')
+  const [showError, setShowError] = useState(false)
   
   function handleSubmit(e) {
     e.preventDefault()
     if (firstName === '' || lastName === '') {
-      console.log("Null values for firstname or lastname")
+      // Assume business logic where first name and last name are mandatory, while other fields are optional for a contact
+      console.log("Null values for first name or last name")
+      setShowError(true)
     } else {
       props.handleAddContact({firstName, lastName, phone, email, address})
+      // Reset fields to empty once a contact is added
+      setFirstName('')
+      setLastName('')
+      setPhone('')
+      setEmail('')
+      setAddress('')
+      setShowError(false)
     }
 
   }
@@ -64,22 +84,25 @@ function AddContact(props) {
     <>
       <form onSubmit={handleSubmit}>
         <label className="text-input">
-          First Name: <input name="firstName" onChange={e => setFirstName(e.target.value)} />
+          First Name: <input name="firstName" value={firstName} onChange={e => setFirstName(e.target.value)} />
         </label>
         <label className="text-input">
-          Last Name: <input name="lastName" onChange={e => setLastName(e.target.value)} />
+          Last Name: <input name="lastName" value={lastName} onChange={e => setLastName(e.target.value)} />
         </label>
         <label className="text-input">
-          Phone Number: <input name="phone" onChange={e => setPhone(e.target.value)} />
+          Phone Number: <input name="phone" value={phone} onChange={e => setPhone(e.target.value)} />
         </label>
         <label className="text-input">
-          Email: <input name="email" onChange={e => setEmail(e.target.value)} />
+          Email: <input name="email" value={email} onChange={e => setEmail(e.target.value)} />
         </label>
         <label className="text-input">
-          Address: <input name="address" onChange={e => setAddress(e.target.value)} />
+          Address: <input name="address" value={address} onChange={e => setAddress(e.target.value)} />
         </label>
         <button type="submit">Submit</button>
       </form>
+      <p className="error-text" > 
+        {showError ? 'Please ensure both a first name and last name are entered before submitting' : ''}
+      </p>
     </>
   )
   
@@ -107,57 +130,56 @@ function AddContact(props) {
 //   )
 // }
 
-function ContactList({data}) {
-  // var contactData = require('./contacts.json')
-  // var contactArray = [];
-  // for (var i in contactData) {
-  //   contactArray.push(contactData[i])
-  // }
+function ContactList(props) {
 
-  var contacts = data.map((contact) =>
+  // Pass contact info to each contact component
+  // ID is passed twice as both key and ID because the ID is needed within the component but React doesn't allow "key" to be accessed
+  var contacts = props.data.map((contact) =>
     <Contact 
       key={contact.id} 
+      id={contact.id}
       firstName={contact.firstName} 
       lastName={contact.lastName} 
       phone={contact.phone} 
       email={contact.email}
       address={contact.address}
+      handleDeleteContact={(id) => props.handleDeleteContact(id)}
     >
     </Contact>
   )
-
-  function handleDelete() {
-    console.log(contacts)
-  }
   
   return (
     <>
-      <div className="contact-list">
-        List of Contacts:
+      <div className="contact-list-header">
+        <p>You have <strong>{contacts.length}</strong> saved contact{contacts.length === 1 ? '' : 's'}</p>
+        <p>List of Contacts:</p>
       </div>
       <ul>{contacts}</ul>
-      <button onClick={handleDelete} >Delete</button>
     </>
   );
 }
 
 function ContactManager() {
   const [contacts, setContacts] = useState(existingContacts)
-  const [id, setID] = useState(3)
-
-  console.log(contacts)
+  // Start IDs at 4 since there are 3 in the pre-existing set
+  const [id, setID] = useState(4)
 
   function addNewContact(info) {
     console.log(info)
     setContacts([...contacts, {id: id, ...info}])
     setID(id + 1)
-    console.log(contacts)
+  }
+
+  function deleteContact(id) {
+    // Find the specified contact by its ID and remove it from the array
+    // IDs of existing contacts do not change after contacts are removed or added, so looking up index in the array by contact ID alone is not reliable
+    setContacts(contacts.filter(contact => contact.id !== id))
   }
 
   return (
     <>
       <div className="App">
-        <ContactList data={contacts}></ContactList>
+        <ContactList data={contacts} handleDeleteContact={deleteContact}></ContactList>
       </div>
       <div className="add-contact">
         <AddContact handleAddContact={addNewContact}></AddContact>

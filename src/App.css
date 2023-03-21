@@ -21,3 +21,7 @@
 .text-input {
   display: block;
 }
+
+.error-text {
+  color: red;
+}
