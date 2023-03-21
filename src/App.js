@@ -29,32 +29,86 @@ const existingContacts = [
 ]
 
 
-function Contact({id, firstName = 'First Name', lastName = 'Last Name', phone = 'Phone Number', email = 'Email', address = 'Address', handleDeleteContact}) {
+function Contact(props) {
+  const [firstName, setFirstName] = useState(props.firstName)
+  const [lastName, setLastName] = useState(props.lastName)
+  const [phone, setPhone] = useState(props.phone)
+  const [email, setEmail] = useState(props.email)
+  const [address, setAddress] = useState(props.address)
+  const [editContact, setEditContact] = useState(false)
+  const [showError, setShowError] = useState(false)
 
-  
-  function handleEditContact() {
-    
+  function handleSubmitEdit(e) {
+    e.preventDefault()
+    if (firstName === '' || lastName === '') {
+      // Assume business logic where first name and last name are mandatory, while other fields are optional for a contact
+      console.log("Null values for first name or last name")
+      setShowError(true)
+    } else {
+      props.handleEditContact(props.id, {firstName, lastName, phone, email, address})
+      setShowError(false)
+      setEditContact(false)
+
+    }
   }
 
+  function handleCancelEdit() {
+    setFirstName(props.firstName)
+    setLastName(props.lastName)
+    setPhone(props.phone)
+    setEmail(props.email)
+    setAddress(props.address)
+    setEditContact(false)
+  }
   
   return (
     <>
-      <div className="contact">
-        <p>First Name: {firstName}</p>
-        <p>Last Name: {lastName}</p>
-        <p>Phone Number: {phone}</p>
-        <p>Email: {email}</p>
-        <p>Address: {address}</p>
-      </div>
-
-      <button className="edit-contact-button" onClick={() => handleEditContact(firstName, lastName, phone, email, address)}>Edit Contact</button>
-      <button className="delete-contact-button" onClick={() => handleDeleteContact(id)} >Delete Contact</button>
+      {editContact
+        ?
+        <>
+          <form onSubmit={handleSubmitEdit}>
+            <label className="text-input">
+              First Name: <input name="firstName" value={firstName} onChange={e => setFirstName(e.target.value)} />
+            </label>
+            <label className="text-input">
+              Last Name: <input name="lastName" value={lastName} onChange={e => setLastName(e.target.value)} />
+            </label>
+            <label className="text-input">
+              Phone Number: <input name="phone" value={phone} onChange={e => setPhone(e.target.value)} />
+            </label>
+            <label className="text-input">
+              Email: <input name="email" value={email} onChange={e => setEmail(e.target.value)} />
+            </label>
+            <label className="text-input">
+              Address: <input name="address" value={address} onChange={e => setAddress(e.target.value)} />
+            </label>
+            <button type="submit">Save</button>
+            <button type="button" onClick={handleCancelEdit}>Cancel Edit</button>
+          </form>
+          <p className="error-text" > 
+            {showError ? 'Please ensure both a first name and last name are entered before saving' : ''}
+          </p>
+        </>
+        : 
+        <>
+          <div className="contact">
+            <p>First Name: {firstName}</p>
+            <p>Last Name: {lastName}</p>
+            <p>Phone Number: {phone}</p>
+            <p>Email: {email}</p>
+            <p>Address: {address}</p>
+          </div>
+          
+          <button className="edit-contact-button" onClick={() => setEditContact(true)}>Edit Contact</button>
+          <button className="delete-contact-button" onClick={() => props.handleDeleteContact(props.id)} >Delete Contact</button>
+        </>
+      }     
+      
     </>
   )
 }
 
 function AddContact(props) {
-
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [phone, setPhone] = useState('')
@@ -78,8 +132,8 @@ function AddContact(props) {
       setAddress('')
       setShowError(false)
     }
-
   }
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -108,28 +162,6 @@ function AddContact(props) {
   
 }
 
-// function EditContact(contactInfo) {
-//   return (
-//     <>
-//       <label className="text-input">
-//         First Name: <input name="firstName" defaultValue={contactInfo.firstName} />
-//       </label>
-//       <label className="text-input">
-//         Last Name: <input name="lastName" defaultValue={contactInfo.lastName} />
-//       </label>
-//       <label className="text-input">
-//         Phone Number: <input name="phone" defaultValue={contactInfo.phone} />
-//       </label>
-//       <label className="text-input">
-//         Email: <input name="email" defaultValue={contactInfo.email} />
-//       </label>
-//       <label className="text-input">
-//         Address: <input name="address" defaultValue={contactInfo.address} />
-//       </label>
-//     </>
-//   )
-// }
-
 function ContactList(props) {
 
   // Pass contact info to each contact component
@@ -144,6 +176,7 @@ function ContactList(props) {
       email={contact.email}
       address={contact.address}
       handleDeleteContact={(id) => props.handleDeleteContact(id)}
+      handleEditContact={(id, info) => props.handleEditContact({id, ...info})}
     >
     </Contact>
   )
@@ -176,10 +209,24 @@ function ContactManager() {
     setContacts(contacts.filter(contact => contact.id !== id))
   }
 
+  function editContact(info) {
+    // Create a copy of the contacts array
+    // Find the array index of the contact-to-be-edited and change its contact info in the copied array
+    // Save the modified contacts array to state
+    var editIndex = contacts.findIndex(contact => contact.id === info.id)
+    var newContacts = [...contacts]
+    newContacts[editIndex] = info
+    setContacts(newContacts)
+  }
+
   return (
     <>
       <div className="App">
-        <ContactList data={contacts} handleDeleteContact={deleteContact}></ContactList>
+        <ContactList 
+          data={contacts} 
+          handleDeleteContact={deleteContact}
+          handleEditContact={editContact}
+        ></ContactList>
       </div>
       <div className="add-contact">
         <AddContact handleAddContact={addNewContact}></AddContact>
