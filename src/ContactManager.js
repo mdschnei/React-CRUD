@@ -17,6 +17,7 @@ function Contact(props) {
   const [editContact, setEditContact] = useState(false)
   const [showError, setShowError] = useState(false)
 
+  // Handling for clicking the submit button to edit a contact's information
   function handleSubmitEdit(e) {
     // Prevent default stops the page from reloading, which is automatic submit button behaviour in JS
     e.preventDefault()
@@ -28,6 +29,15 @@ function Contact(props) {
       props.handleEditContact(props.id, {firstName, lastName, phone, email, address})
       setShowError(false)
       setEditContact(false)
+
+      // Kind of unnecessary but immediately updates fields to match the 'N/A' in the database without needing a reload, otherwise fields would just be empty after save
+      if (!phone) {
+        setPhone('N/A')
+      } if (!email) {
+        setEmail('N/A')
+      } if (!address) {
+        setAddress('N/A')
+      }
     }
   }
 
@@ -39,6 +49,7 @@ function Contact(props) {
     setEmail(props.email)
     setAddress(props.address)
     setEditContact(false)
+    setShowError(false)
   }
   
   return (
@@ -47,25 +58,32 @@ function Contact(props) {
         ?
         // Conditionally show editing form if user has clicked the "Edit Contact" button
         <>
-          <div className="contact">
-            <form onSubmit={handleSubmitEdit}>
-              <label className="text-input">
-                First Name: <input name="firstName" value={firstName} onChange={e => setFirstName(e.target.value)} />
-              </label>
-              <label className="text-input">
-                Last Name: <input name="lastName" value={lastName} onChange={e => setLastName(e.target.value)} />
-              </label>
-              <label className="text-input">
-                Phone Number: <input name="phone" value={phone} onChange={e => setPhone(e.target.value)} />
-              </label>
-              <label className="text-input">
-                Email: <input name="email" value={email} onChange={e => setEmail(e.target.value)} />
-              </label>
-              <label className="text-input">
-                Address: <input name="address" value={address} onChange={e => setAddress(e.target.value)} />
-              </label>
-              <button type="submit">Save</button>
-              <button type="button" onClick={handleCancelEdit}>Cancel Edit</button>
+          <div className="contact-card">
+            <div className="profile-photo">
+              <img className="profile" alt="profile" src={require('./profile.jpg')} />
+            </div>
+            <form onSubmit={handleSubmitEdit} className="contact-edit-form">
+              <div className="contact-info">
+                <label className="text-input">
+                  First Name: <input name="firstName" className="contact-field" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                </label>
+                <label className="text-input">
+                  Last Name: <input name="lastName" className="contact-field" value={lastName} onChange={e => setLastName(e.target.value)} />
+                </label>
+                <label className="text-input">
+                  Phone Number: <input name="phone" className="contact-field" value={phone} onChange={e => setPhone(e.target.value)} />
+                </label>
+                <label className="text-input">
+                  Email: <input name="email" className="contact-field" value={email} onChange={e => setEmail(e.target.value)} />
+                </label>
+                <label className="text-input">
+                  Address: <input name="address" className="contact-field" value={address} onChange={e => setAddress(e.target.value)} />
+                </label>
+              </div>
+              <div className="contact-buttons">
+                <button className="edit-contact-button" type="submit">Save</button>
+                <button className="delete-contact-button" type="button" onClick={handleCancelEdit}>Cancel Edit</button>
+              </div>
             </form>
             <p className="error-text" > 
               {showError ? 'Please ensure both a first name and last name are entered before saving' : ''}
@@ -76,23 +94,27 @@ function Contact(props) {
         // Display the contact info along with Edit and Delete buttons below 
         // These do not show while the user is actively editing the contact's info
         <>
-          <div className="contact">
-            <p>First Name: {firstName}</p>
-            <p>Last Name: {lastName}</p>
-            <p>Phone Number: {phone}</p>
-            <p>Email: {email}</p>
-            <p>Address: {address}</p>
+          <div className="contact-card">
+            <div className="profile-photo">
+              <img className="profile" alt="profile" src={require('./profile.jpg')} />
+            </div>
+            <div className="contact-info">
+              <div className="contact-field">First Name: {firstName}</div>
+              <div className="contact-field">Last Name: {lastName}</div>
+              <div className="contact-field">Phone Number: {phone}</div>
+              <div className="contact-field">Email: {email}</div>
+              <div className="contact-field">Address: {address}</div>
+            </div>
+            <div className="contact-buttons">
+              <button className="edit-contact-button" onClick={() => setEditContact(true)}>Edit Contact</button>
+              <button className="delete-contact-button" onClick={() => props.handleDeleteContact(props.id)} >Delete Contact</button>
+            </div>
           </div>
-          
-          <button className="edit-contact-button" onClick={() => setEditContact(true)}>Edit Contact</button>
-          <button className="delete-contact-button" onClick={() => props.handleDeleteContact(props.id)} >Delete Contact</button>
         </>
       }     
-      
     </>
   )
 }
-
 
 // Renders the add new contact form and functionality
 function AddContact(props) {
@@ -113,6 +135,7 @@ function AddContact(props) {
       console.log("Null values for first name or last name")
       // Show error text to user if requirements not fulfilled
       setShowError(true)
+      // Timeout is kind of buggy because if the button is clicked again there is resetting the timer, but at least it doesn't stay on the screen permanently
       setTimeout(() => setShowError(false), 5000)
     } else {
       props.handleAddContact({firstName, lastName, phone, email, address})
@@ -130,27 +153,30 @@ function AddContact(props) {
   // Fields are two-way linked to their respective value in state such that each updates dynamically
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label className="text-input">
-          First Name: <input name="firstName" value={firstName} onChange={e => setFirstName(e.target.value)} />
-        </label>
-        <label className="text-input">
-          Last Name: <input name="lastName" value={lastName} onChange={e => setLastName(e.target.value)} />
-        </label>
-        <label className="text-input">
-          Phone Number: <input name="phone" value={phone} onChange={e => setPhone(e.target.value)} />
-        </label>
-        <label className="text-input">
-          Email: <input name="email" value={email} onChange={e => setEmail(e.target.value)} />
-        </label>
-        <label className="text-input">
-          Address: <input name="address" value={address} onChange={e => setAddress(e.target.value)} />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-      <p className="error-text" > 
-        {showError ? 'Please ensure both a first name and last name are entered before submitting' : ''}
-      </p>
+      <h2>Add a new contact:</h2>
+      <div className="contact-card">
+        <form onSubmit={handleSubmit}>
+          <label className="text-input">
+            First Name: <input name="firstName" className="contact-field" value={firstName} onChange={e => setFirstName(e.target.value)} />
+          </label>
+          <label className="text-input">
+            Last Name: <input name="lastName" className="contact-field" value={lastName} onChange={e => setLastName(e.target.value)} />
+          </label>
+          <label className="text-input">
+            Phone Number: <input name="phone" className="contact-field" value={phone} onChange={e => setPhone(e.target.value)} />
+          </label>
+          <label className="text-input">
+            Email: <input name="email" className="contact-field" value={email} onChange={e => setEmail(e.target.value)} />
+          </label>
+          <label className="text-input">
+            Address: <input name="address" className="contact-field" value={address} onChange={e => setAddress(e.target.value)} />
+          </label>
+          <button type="submit" className="add-contact-button">Add Contact</button>
+        </form>
+        <p className="error-text" > 
+          {showError ? 'Please ensure both a first name and last name are entered before submitting' : ''}
+        </p>
+      </div>
     </>
   )
   
@@ -177,9 +203,9 @@ function ContactList(props) {
   
   return (
     <>
-      <div className="contact-list-header">
-        <p>You have <strong>{contacts.length}</strong> saved contact{contacts.length === 1 ? '' : 's'}</p>
-        <p>List of Contacts:</p>
+      <div>
+        <h2>You have <strong>{contacts.length}</strong> saved contact{contacts.length === 1 ? '! Best hold on to them.' : 's!'} {contacts.length === 0 ? 'Now that\'s just sad.' : ''} {contacts.length >= 6 ? 'Wow, you\'re pretty popular!' : ''}</h2>
+        <h2>List of Contacts:</h2>
       </div>
       <ul>{contacts}</ul>
     </>
@@ -196,7 +222,7 @@ function ContactManager() {
     ReadContacts().then(data => {
       setContacts(data)
     })
-    .catch((error) => console.log(error))
+    .catch((error) => console.error(error))
   }, [])  
 
   function addNewContact(info) {
@@ -208,7 +234,7 @@ function ContactManager() {
           ReadContacts().then(data => {
             setContacts(data)
           })
-          .catch((error) => console.log(error))
+          .catch((error) => console.error(error))
         }
       })
   }
@@ -222,7 +248,7 @@ function ContactManager() {
           ReadContacts().then(data => {
             setContacts(data)
           })
-          .catch((error) => console.log(error))
+          .catch((error) => console.error(error))
         }
       })
   }
@@ -236,7 +262,7 @@ function ContactManager() {
           ReadContacts().then(data => {
             setContacts(data)
           })
-          .catch((error) => console.log(error))
+          .catch((error) => console.error(error))
         }
       })
   }
@@ -245,20 +271,24 @@ function ContactManager() {
     <>
       {contacts ? 
         <>
-          <div className="App">
-            <ContactList 
-              data={contacts} 
-              handleDeleteContact={deleteContact}
-              handleEditContact={editContact}
-            ></ContactList>
-          </div>
-          <div className="add-contact">
-            <AddContact handleAddContact={addNewContact}></AddContact>
+          <div className="main-container">
+            <h1 className="main-header">Contact Manager</h1>
+            <div>
+              <ContactList 
+                data={contacts} 
+                handleDeleteContact={deleteContact}
+                handleEditContact={editContact}
+              ></ContactList>
+            </div>
+            <div>
+              <AddContact handleAddContact={addNewContact}></AddContact>
+            </div>
           </div>
         </>
       :
       // Don't show content until the contacts have been retrieved
-      <div>Loading contacts...</div>
+      // If you see this on the page for more than an instant then something has gone wrong
+      <h1>Loading contacts...</h1>
       }
     </>
   );

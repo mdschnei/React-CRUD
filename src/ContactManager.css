@@ -1,25 +1,119 @@
-.App {
+body {
+  background-color: azure;
+  font-family: Roboto, Arial;
+}
+
+ul {
+  padding: 0px;
+}
+
+h2 {
+  color: rgb(17, 95, 230);
+}
+
+.main-container {
+  display: block;
+  padding: 10px 50px;
+}
+
+.main-header {
+  font-size: 30px;
   text-align: center;
+  margin: auto;
+  color: rgb(17, 95, 230);
+  padding-bottom: 15px;
+  border-bottom: 2px solid black;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.contact-card {
+  background-color: rgb(195, 238, 248);
+  box-shadow: 0 2px 3px rgb(168, 166, 166), 0 0 0 1px grey;
+  max-width: 100%;
+  position: relative;
+  padding: 1.5rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
 }
 
-.contact {
-  margin-top: 20px;
-  border-top: 1px solid black;
+.profile-photo {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: auto 0;
+  padding-right: 30px;
+  border-right: 2px solid rgb(157, 161, 161);
+}
+
+.profile {
+  border-radius: 50%;
+  width: 120px;
+  display: block;
+  position: relative;
+}
+
+.contact-info {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
+  padding-left: 30px;
+}
+
+.contact-field {
+  padding: 8px;
+  min-width: 200px;
+}
+
+.contact-buttons {
+  float: right;
+}
+
+.edit-contact-button {
+  font-family: Roboto;
+  font-size: 1.1rem;
+  background-color:rgb(202, 152, 70);
+  padding: 10px;
+  margin-right: 20px;
+  border-radius: 5%;
+  cursor: pointer;
+}
+
+.delete-contact-button {
+  font-family: Roboto;
+  font-size: 1.1rem;
+  background-color: rgb(228, 141, 141);
+  padding: 10px;
+  border-radius: 5%;
+  cursor: pointer;
+}
+
+.add-contact-button {
+  font-family: Roboto;
+  font-size: 1.1rem;
+  background-color: rgb(35, 230, 48);
+  padding: 10px;
+  border-radius: 5%;
+  cursor: pointer;
+  margin: 10px 0px 0px 8px;
+}
+
+.contact-edit-form {
+  display: flex;
+  width: 100%;
+}
+
+.error-text {
+  position: absolute;
+  right: 20px;
+  bottom: -5px;
 }
 
 .text-input {
+  font-family: Roboto;
   display: block;
+  padding: 1px 0px 1px 8px;
 }
 
 .error-text {

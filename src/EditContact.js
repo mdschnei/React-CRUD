@@ -5,9 +5,9 @@ async function EditContact(props) {
     const contactInfo = {
         firstName: props.firstName,
         lastName: props.lastName,
-        phone: props.phone,
-        email: props.email,
-        address: props.address
+        phone: props.phone || "N/A",
+        email: props.email || "N/A",
+        address: props.address || "N/A"
     }
 
     const response = await fetch("http://localhost:3002/contacts/" + props.id, {
@@ -18,8 +18,6 @@ async function EditContact(props) {
         body: JSON.stringify(contactInfo)
     })
     .then(res => {
-        console.log(res)
-        console.log(res.status)
         return res.status
     })
     .catch(error => console.error("Error when editing contact:", error))

@@ -5,9 +5,9 @@ async function CreateContact(props) {
     const contactInfo = {
         firstName: props.firstName,
         lastName: props.lastName,
-        phone: props.phone,
-        email: props.email,
-        address: props.address
+        phone: props.phone || "N/A",
+        email: props.email || "N/A",
+        address: props.address || "N/A"
     }
 
     const response = await fetch("http://localhost:3002/contacts", {
@@ -19,7 +19,7 @@ async function CreateContact(props) {
     }).then(res => {
         return res.status
     }
-    ).catch((error) => console.log("Error adding contact:", error));
+    ).catch((error) => console.error("Error adding contact:", error));
     // Return the status code, 201 is success
     return response
 }
