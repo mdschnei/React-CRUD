@@ -1,34 +1,11 @@
-import './App.css';
-import { useState } from 'react';
+import './ContactManager.css';
+import { useEffect, useState } from 'react';
+import ReadContacts from './ReadContacts';
+import CreateContact from './CreateContact';
+import DeleteContact from './DeleteContact';
+import EditContact from './EditContact';
 
-const existingContacts = [
-  {
-      "id": 1,
-      "firstName": "Alison",
-      "lastName": "McKenzie",
-      "phone": "9287289187",
-      "email": "amckenzie73@gmail.com",
-      "address": "127 Firestone Court, Mississauga ON"
-  },
-  {   
-      "id": 2,
-      "firstName": "Tommy",
-      "lastName": "Baker",
-      "phone": "2739280192",
-      "email": "tommybaker12@gmail.com",
-      "address": "82 Almet Avenue, Oakville ON"
-  },
-  {
-    "id": 3,
-      "firstName": "Jeanette",
-      "lastName": "Aprile",
-      "phone": "8270207712",
-      "email": "jeanette.aprile@gmail.com",
-      "address": "927 Sonwa Drive, Kelowna BC"
-  }
-]
-
-
+// Render the individual contacts
 function Contact(props) {
   const [firstName, setFirstName] = useState(props.firstName)
   const [lastName, setLastName] = useState(props.lastName)
@@ -52,6 +29,7 @@ function Contact(props) {
     }
   }
 
+  // Upon clicking the cancel button, revert fields to their initial values
   function handleCancelEdit() {
     setFirstName(props.firstName)
     setLastName(props.lastName)
@@ -65,31 +43,36 @@ function Contact(props) {
     <>
       {editContact
         ?
+        // Conditionally show editing form if user has clicked the "Edit Contact" button
         <>
-          <form onSubmit={handleSubmitEdit}>
-            <label className="text-input">
-              First Name: <input name="firstName" value={firstName} onChange={e => setFirstName(e.target.value)} />
-            </label>
-            <label className="text-input">
-              Last Name: <input name="lastName" value={lastName} onChange={e => setLastName(e.target.value)} />
-            </label>
-            <label className="text-input">
-              Phone Number: <input name="phone" value={phone} onChange={e => setPhone(e.target.value)} />
-            </label>
-            <label className="text-input">
-              Email: <input name="email" value={email} onChange={e => setEmail(e.target.value)} />
-            </label>
-            <label className="text-input">
-              Address: <input name="address" value={address} onChange={e => setAddress(e.target.value)} />
-            </label>
-            <button type="submit">Save</button>
-            <button type="button" onClick={handleCancelEdit}>Cancel Edit</button>
-          </form>
-          <p className="error-text" > 
-            {showError ? 'Please ensure both a first name and last name are entered before saving' : ''}
-          </p>
+          <div className="contact">
+            <form onSubmit={handleSubmitEdit}>
+              <label className="text-input">
+                First Name: <input name="firstName" value={firstName} onChange={e => setFirstName(e.target.value)} />
+              </label>
+              <label className="text-input">
+                Last Name: <input name="lastName" value={lastName} onChange={e => setLastName(e.target.value)} />
+              </label>
+              <label className="text-input">
+                Phone Number: <input name="phone" value={phone} onChange={e => setPhone(e.target.value)} />
+              </label>
+              <label className="text-input">
+                Email: <input name="email" value={email} onChange={e => setEmail(e.target.value)} />
+              </label>
+              <label className="text-input">
+                Address: <input name="address" value={address} onChange={e => setAddress(e.target.value)} />
+              </label>
+              <button type="submit">Save</button>
+              <button type="button" onClick={handleCancelEdit}>Cancel Edit</button>
+            </form>
+            <p className="error-text" > 
+              {showError ? 'Please ensure both a first name and last name are entered before saving' : ''}
+            </p>
+          </div>
         </>
         : 
+        // Display the contact info along with Edit and Delete buttons below 
+        // These do not show while the user is actively editing the contact's info
         <>
           <div className="contact">
             <p>First Name: {firstName}</p>
@@ -108,7 +91,10 @@ function Contact(props) {
   )
 }
 
+
+// Renders the add new contact form and functionality
 function AddContact(props) {
+  // All fields are initially blank
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [phone, setPhone] = useState('')
@@ -116,6 +102,7 @@ function AddContact(props) {
   const [address, setAddress] = useState('')
   const [showError, setShowError] = useState(false)
   
+
   function handleSubmit(e) {
     e.preventDefault()
     if (firstName === '' || lastName === '') {
@@ -162,8 +149,8 @@ function AddContact(props) {
   
 }
 
+// Renders the list of contacts
 function ContactList(props) {
-
   // Pass contact info to each contact component
   // ID is passed twice as both key and ID because the ID is needed within the component but React doesn't allow "key" to be accessed
   var contacts = props.data.map((contact) =>
@@ -192,45 +179,80 @@ function ContactList(props) {
   );
 }
 
+// Top level component and main action area
 function ContactManager() {
-  const [contacts, setContacts] = useState(existingContacts)
-  // Start IDs at 4 since there are 3 in the pre-existing set
-  const [id, setID] = useState(4)
+  // Tracks the active contacts after being fetched
+  const [contacts, setContacts] = useState(null)
+
+  // On initial page load, asynchronously call the ReadContacts function to obtain the current list of contacts
+  useEffect(() => {
+    ReadContacts().then(data => {
+      setContacts(data)
+    })
+    .catch((error) => console.log(error))
+  }, [])  
 
   function addNewContact(info) {
-    console.log(info)
-    setContacts([...contacts, {id: id, ...info}])
-    setID(id + 1)
-  }
-
-  function deleteContact(id) {
-    // Find the specified contact by its ID and remove it from the array
-    // IDs of existing contacts do not change after contacts are removed or added, so looking up index in the array by contact ID alone is not reliable
-    setContacts(contacts.filter(contact => contact.id !== id))
+    // Add a new contact by passing the relevant info to the CreateContact function
+    CreateContact({...info})
+      .then((res) => {
+        if (res === 201) {
+          // After a successful addition, re-fetch the list of contacts to update the page
+          ReadContacts().then(data => {
+            setContacts(data)
+          })
+          .catch((error) => console.log(error))
+        }
+      })
   }
 
   function editContact(info) {
-    // Create a copy of the contacts array
-    // Find the array index of the contact-to-be-edited and change its contact info in the copied array
-    // Save the modified contacts array to state
-    var editIndex = contacts.findIndex(contact => contact.id === info.id)
-    var newContacts = [...contacts]
-    newContacts[editIndex] = info
-    setContacts(newContacts)
+    // Edit a contact by passing the new set of info along with the relevant ID to the EditContact function
+    EditContact(info)
+      .then((res) => {
+        if (res === 200) {
+          // After a successful edit, re-fetch the list of contacts to update the page
+          ReadContacts().then(data => {
+            setContacts(data)
+          })
+          .catch((error) => console.log(error))
+        }
+      })
+  }
+
+  function deleteContact(id) {
+    // Delete a contact by passing its ID to the DeleteContact function
+    DeleteContact(id)
+      .then((res) => {
+        if (res === 200) {
+          // After successful deletion, re-fetch the list of contacts to update the page
+          ReadContacts().then(data => {
+            setContacts(data)
+          })
+          .catch((error) => console.log(error))
+        }
+      })
   }
 
   return (
     <>
-      <div className="App">
-        <ContactList 
-          data={contacts} 
-          handleDeleteContact={deleteContact}
-          handleEditContact={editContact}
-        ></ContactList>
-      </div>
-      <div className="add-contact">
-        <AddContact handleAddContact={addNewContact}></AddContact>
-      </div>
+      {contacts ? 
+        <>
+          <div className="App">
+            <ContactList 
+              data={contacts} 
+              handleDeleteContact={deleteContact}
+              handleEditContact={editContact}
+            ></ContactList>
+          </div>
+          <div className="add-contact">
+            <AddContact handleAddContact={addNewContact}></AddContact>
+          </div>
+        </>
+      :
+      // Don't show content until the contacts have been retrieved
+      <div>Loading contacts...</div>
+      }
     </>
   );
 }
