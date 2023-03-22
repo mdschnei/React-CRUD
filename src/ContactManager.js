@@ -204,8 +204,8 @@ function ContactList(props) {
   return (
     <>
       <div>
-        <h2>You have <strong>{contacts.length}</strong> saved contact{contacts.length === 1 ? '! Best hold on to them.' : 's!'} {contacts.length === 0 ? 'Now that\'s just sad.' : ''} {contacts.length >= 6 ? 'Wow, you\'re pretty popular!' : ''}</h2>
-        <h2>List of Contacts:</h2>
+        <h2>You have <strong>{contacts.length}</strong> saved contact{contacts.length === 1 ? '! Better hold on to them.' : 's!'} {contacts.length === 0 ? 'Now that\'s just sad.' : ''} {contacts.length >= 6 ? 'Wow, you\'re pretty popular!' : ''}</h2>
+        {contacts.length !== 0 ? <h2>List of Contacts:</h2> : <></>}
       </div>
       <ul>{contacts}</ul>
     </>
