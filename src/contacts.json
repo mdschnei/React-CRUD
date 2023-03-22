@@ -17,60 +17,12 @@
       "id": 2
     },
     {
-      "firstName": "James",
-      "lastName": "Blackwell",
-      "phone": "2019283928",
-      "email": "awd",
-      "address": "N/A",
+      "firstName": "Jeanette",
+      "lastName": "Aprile",
+      "phone": "8270207712",
+      "email": "jeanette.aprile@gmail.com",
+      "address": "927 Sonwa Drive, Kelowna BC",
       "id": 3
-    },
-    {
-      "firstName": "awd",
-      "lastName": "awd",
-      "phone": "N/A",
-      "email": "awd",
-      "address": "aw",
-      "id": 4
-    },
-    {
-      "firstName": "w",
-      "lastName": "wd",
-      "phone": "N/A",
-      "email": "N/A",
-      "address": "N/A",
-      "id": 5
-    },
-    {
-      "firstName": "aw",
-      "lastName": "awd",
-      "phone": "N/A",
-      "email": "N/A",
-      "address": "N/A",
-      "id": 6
-    },
-    {
-      "firstName": "awd",
-      "lastName": "aw",
-      "phone": "N/A",
-      "email": "N/A",
-      "address": "N/A",
-      "id": 7
-    },
-    {
-      "firstName": "zdc",
-      "lastName": "awd",
-      "phone": "N/A",
-      "email": "N/A",
-      "address": "N/A",
-      "id": 8
-    },
-    {
-      "firstName": "qwd",
-      "lastName": "543",
-      "phone": "N/A",
-      "email": "N/A",
-      "address": "N/A",
-      "id": 9
     }
   ]
 }
