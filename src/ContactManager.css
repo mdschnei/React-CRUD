@@ -70,7 +70,7 @@ h2 {
   float: right;
 }
 
-.edit-contact-button {
+.update-contact-button {
   font-family: Roboto;
   font-size: 1.1rem;
   background-color:rgb(202, 152, 70);
@@ -99,7 +99,7 @@ h2 {
   margin: 10px 0px 0px 8px;
 }
 
-.contact-edit-form {
+.contact-update-form {
   display: flex;
   width: 100%;
 }

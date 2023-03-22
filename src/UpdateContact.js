@@ -1,7 +1,7 @@
-// Function allowing for the editing of existing contacts from the json-server backend
-// Edits a contact by identifying it by its ID and performing an HTTP PUT request with the updated info
-// A possible improvement could be checking if the values are unchanged before launching the EditContact call to prevent unnecessary HTTP calls
-async function EditContact(props) {
+// Function allowing for the updating of existing contacts from the json-server backend
+// Updates a contact by identifying it by its ID and performing an HTTP PUT request with the updated info
+// A possible improvement could be checking if the values are unchanged before launching the UpdateContact call to prevent unnecessary HTTP calls
+async function UpdateContact(props) {
     const contactInfo = {
         firstName: props.firstName.trim(),
         lastName: props.lastName.trim(),
@@ -20,9 +20,9 @@ async function EditContact(props) {
     .then(res => {
         return res.status
     })
-    .catch(error => console.error("Error when editing contact:", error))
+    .catch(error => console.error("Error when updating contact:", error))
     // Return the status code, 200 is success
     return response
 }
 
-export default EditContact;
+export default UpdateContact;

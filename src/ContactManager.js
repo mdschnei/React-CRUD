@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import ReadContacts from './ReadContacts';
 import CreateContact from './CreateContact';
 import DeleteContact from './DeleteContact';
-import EditContact from './EditContact';
+import UpdateContact from './UpdateContact';
 
 // Render the individual contacts
 function Contact(props) {
@@ -13,12 +13,12 @@ function Contact(props) {
   const [phone, setPhone] = useState(props.phone)
   const [email, setEmail] = useState(props.email)
   const [address, setAddress] = useState(props.address)
-  // Conditional flags exist depending on edit related circumstances
-  const [editContact, setEditContact] = useState(false)
+  // Conditional flags exist depending on update related circumstances
+  const [updateContact, setUpdateContact] = useState(false)
   const [showError, setShowError] = useState(false)
 
-  // Handling for clicking the submit button to edit a contact's information
-  function handleSubmitEdit(e) {
+  // Handling for clicking the submit button to update a contact's information
+  function handleSubmitUpdate(e) {
     // Prevent default stops the page from reloading, which is automatic submit button behaviour in JS
     e.preventDefault()
     if (firstName === '' || lastName === '') {
@@ -26,9 +26,9 @@ function Contact(props) {
       console.log("Null values for first name or last name")
       setShowError(true)
     } else {
-      props.handleEditContact(props.id, {firstName, lastName, phone, email, address})
+      props.handleUpdateContact(props.id, {firstName, lastName, phone, email, address})
       setShowError(false)
-      setEditContact(false)
+      setUpdateContact(false)
 
       // Kind of unnecessary but immediately updates fields to match the 'N/A' in the database without needing a reload, otherwise fields would just be empty after save
       setFirstName(firstName.trim())
@@ -44,27 +44,27 @@ function Contact(props) {
   }
 
   // Upon clicking the cancel button, revert fields to their initial values
-  function handleCancelEdit() {
+  function handleCancelUpdate() {
     setFirstName(props.firstName)
     setLastName(props.lastName)
     setPhone(props.phone)
     setEmail(props.email)
     setAddress(props.address)
-    setEditContact(false)
+    setUpdateContact(false)
     setShowError(false)
   }
   
   return (
     <>
-      {editContact
+      {updateContact
         ?
-        // Conditionally show editing form if user has clicked the "Edit Contact" button
+        // Conditionally show updating form if user has clicked the "Update Contact" button
         <>
           <div className="contact-card">
             <div className="profile-photo">
               <img className="profile" alt="profile" src={require('./profile.jpg')} />
             </div>
-            <form onSubmit={handleSubmitEdit} className="contact-edit-form">
+            <form onSubmit={handleSubmitUpdate} className="contact-update-form">
               <div className="contact-info">
                 <label className="text-input">
                   First Name: <input name="firstName" className="contact-field" value={firstName} onChange={e => setFirstName(e.target.value)} />
@@ -83,8 +83,8 @@ function Contact(props) {
                 </label>
               </div>
               <div className="contact-buttons">
-                <button className="edit-contact-button" type="submit">Save</button>
-                <button className="delete-contact-button" type="button" onClick={handleCancelEdit}>Cancel Edit</button>
+                <button className="update-contact-button" type="submit">Save</button>
+                <button className="delete-contact-button" type="button" onClick={handleCancelUpdate}>Cancel Update</button>
               </div>
             </form>
             <p className="error-text" > 
@@ -93,8 +93,8 @@ function Contact(props) {
           </div>
         </>
         : 
-        // Display the contact info along with Edit and Delete buttons below 
-        // These do not show while the user is actively editing the contact's info
+        // Display the contact info along with Update and Delete buttons below 
+        // These do not show while the user is actively updating the contact's info
         <>
           <div className="contact-card">
             <div className="profile-photo">
@@ -108,7 +108,7 @@ function Contact(props) {
               <div className="contact-field">Address: {address}</div>
             </div>
             <div className="contact-buttons">
-              <button className="edit-contact-button" onClick={() => setEditContact(true)}>Edit Contact</button>
+              <button className="update-contact-button" onClick={() => setUpdateContact(true)}>Update Contact</button>
               <button className="delete-contact-button" onClick={() => props.handleDeleteContact(props.id)} >Delete Contact</button>
             </div>
           </div>
@@ -198,7 +198,7 @@ function ContactList(props) {
       email={contact.email}
       address={contact.address}
       handleDeleteContact={(id) => props.handleDeleteContact(id)}
-      handleEditContact={(id, info) => props.handleEditContact({id, ...info})}
+      handleUpdateContact={(id, info) => props.handleUpdateContact({id, ...info})}
     >
     </Contact>
   )
@@ -241,12 +241,12 @@ function ContactManager() {
       })
   }
 
-  function editContact(info) {
-    // Edit a contact by passing the new set of info along with the relevant ID to the EditContact function
-    EditContact(info)
+  function updateContact(info) {
+    // Update a contact by passing the new set of info along with the relevant ID to the UpdateContact function
+    UpdateContact(info)
       .then((res) => {
         if (res === 200) {
-          // After a successful edit, re-fetch the list of contacts to update the page
+          // After a successful update, re-fetch the list of contacts to update the page
           ReadContacts().then(data => {
             setContacts(data)
           })
@@ -279,7 +279,7 @@ function ContactManager() {
               <ContactList 
                 data={contacts} 
                 handleDeleteContact={deleteContact}
-                handleEditContact={editContact}
+                handleUpdateContact={updateContact}
               ></ContactList>
             </div>
             <div>
@@ -290,7 +290,10 @@ function ContactManager() {
       :
       // Don't show content until the contacts have been retrieved
       // If you see this on the page for more than an instant then something has gone wrong
-      <h1>Loading contacts...</h1>
+      <>
+        <h1>Loading contacts...</h1>
+        <h1>If you're seeing this, you may have forgotten to run the json-server script!</h1>
+      </>
       }
     </>
   );
