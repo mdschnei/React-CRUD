@@ -1,3 +1,5 @@
+// Function allowing for the deletion of contacts from the json-server backend
+// Deletes a contact by identifying it by its ID and performing an HTTP DELETE request
 async function DeleteContact(id) {
     const response = await fetch("http://localhost:3002/contacts/" + id, {
         method: "DELETE",

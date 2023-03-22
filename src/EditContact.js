@@ -1,3 +1,6 @@
+// Function allowing for the editing of existing contacts from the json-server backend
+// Edits a contact by identifying it by its ID and performing an HTTP PUT request with the updated info
+// A possible improvement could be checking if the values are unchanged before launching the EditContact call to prevent unnecessary HTTP calls
 async function EditContact(props) {
     const contactInfo = {
         firstName: props.firstName,
