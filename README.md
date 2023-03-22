@@ -29,8 +29,17 @@ The main logic is contained in the ContactManager.js file, containing several ne
 
 While all operations are initiated in the ContactManager.js file, the four service functions handling the HTTP create, read, update, and delete operations are housed in separate files for ease of readability and to simulate the more usual structure of a larger codebase. Each of these functions is a simple request handler that uses the fetch API and contact data to perform operations on the json server, returning either the parsed list of contacts in the case of ReadContacts.js or an HTTP response status code in the case of the other handlers.
 
-Note that this app is not optimized for mobile screens, and the UI will probably break if insufficient width is available.
-
 ### Using the App
 
-Using the app is fairly straightforward, with a simple-to-understand UI displayed to the user upon launch. Below the headers, contact cards are displayed to the user in rows, with their first name, last name, phone number, email, and local address appearing alongside a stock profile photo (shown for display purposes but not customizable). To the right side of the contact information are Update and Delete contact buttons corresponding to that contact. Clicking the delete button will immediately delete that contact, updating the page instantly to reflect the change. Clicking the update button will change the contact information into text inputs that the user can enter the amended information into, while the update and delete buttons will change into "Save and "Cancel" buttons, respectively. Changes are only made final once the user clicks either of these two buttons after making (or not making) changes.
+Using the app is fairly straightforward, with a simple-to-understand UI displayed to the user upon launch. 
+
+Below the headers at the top displaying the title and number of contacts in the list, contact cards are displayed to the user in rows, with their first name, last name, phone number, email, and local address appearing alongside a stock profile photo (shown for display purposes but not customizable). 
+
+To the right side of the contact information are Update and Delete contact buttons corresponding to that contact. Clicking the delete button will immediately delete that contact, updating the page instantly to reflect the change. Clicking the update button will change the contact information into text inputs that the user can enter the amended information into, while the update and delete buttons will change into "Save and "Cancel" buttons, respectively. Changes are only made final once the user clicks either of these two buttons after making (or not making) changes.
+
+Below the contacts is the Add new contact card, which is similar in design to the other cards. The user may freely enter contact info into the text inputs for each of the five fields, and click the "Add Contact" button once they are finished. The page will then automatically update to show the newly added contact in the list.
+
+The app contains very light error validation as a demonstration, contained within the inputs for first and last names when attempting to update or add a contact. Assumed business logic for a contact decrees that each contact must have at least a first and last name to be entered, while phone, email, and address are all optional. Attempting to save a contact without either first or last name will result in an error message appearing on the screen without the changes being made, requesting that the user fill in the missing fields.
+
+Note that this app is not optimized for mobile screens, and the UI will probably break if insufficient width is available.
+
