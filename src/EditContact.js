@@ -3,11 +3,11 @@
 // A possible improvement could be checking if the values are unchanged before launching the EditContact call to prevent unnecessary HTTP calls
 async function EditContact(props) {
     const contactInfo = {
-        firstName: props.firstName,
-        lastName: props.lastName,
-        phone: props.phone || "N/A",
-        email: props.email || "N/A",
-        address: props.address || "N/A"
+        firstName: props.firstName.trim(),
+        lastName: props.lastName.trim(),
+        phone: props.phone.trim() || "N/A",
+        email: props.email.trim() || "N/A",
+        address: props.address.trim() || "N/A"
     }
 
     const response = await fetch("http://localhost:3002/contacts/" + props.id, {

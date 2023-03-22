@@ -31,6 +31,8 @@ function Contact(props) {
       setEditContact(false)
 
       // Kind of unnecessary but immediately updates fields to match the 'N/A' in the database without needing a reload, otherwise fields would just be empty after save
+      setFirstName(firstName.trim())
+      setLastName(lastName.trim())
       if (!phone) {
         setPhone('N/A')
       } if (!email) {
